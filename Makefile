@@ -1,4 +1,4 @@
-CFLAGS=-Wall
+CFLAGS=-std=gnu89 -Wall -Wno-unused-function
 LDFLAGS=-static --oformat=binary --nmagic
 
 .PHONY: all clean disk deploy run

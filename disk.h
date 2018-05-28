@@ -6,7 +6,7 @@
 #endif
 
 /* read_disk:  reads 2 sectors from floppy; starting at 2nd sector */
-static inline void read_disk(void)
+static void read_disk(void)
 {
 	unsigned char cf, reset;
 	cf = 0;
