@@ -1,10 +1,12 @@
 #include "code16gcc.h"
 #include "system.h"
+#include "disk.h"
 #include "io.h"
 
 int main()
 {
-	void graphics(void);
+	extern void graphics(void);
+	extern void graphics2(void);
 	unsigned char ch, i;
 	for (;;) {
 		print("Press 'q' to reboot system...\r\n"
@@ -14,7 +16,7 @@ int main()
 		switch (ch) {
 		case 'q':
 		case 'Q':
-			__asm__("jmp $0xFFFF, $0x0000;");
+			reboot();
 			break;
 		case 'e':
 		case 'E':
@@ -30,6 +32,10 @@ int main()
 		case 'G':
 			graphics();
 			break;
+		case 't':
+		case 'T':
+			graphics2();
+			break;
 		default:
 			print("Invalid key pressed\r\n");
 			break;
@@ -41,11 +47,28 @@ void graphics(void)
 {
 	unsigned short x, y;
 
-	init_graphics(0x0D);
-	for (y = 0; y < 50; y+=2)
-		for (x = 0; x <= 25; x+=5)
-			draw_pixel(y, x, 0x0f);
+	init_graphics(0x12);
+	for (y = 0; y <= 240; y += 2)
+		for (x = 0; x <= 320; x += 2)
+			draw_pixel(y, x, 0x2f);
+	move(10, 10);
+	print_color(" Hello world ! ! ! ", 0x0D);
 	getch();
 	init_graphics(0x02);
-	reboot();
+	read_disk();
+}
+
+void graphics2(void)
+{
+	unsigned short x, y;
+
+	init_graphics(0x12);
+	for (y = 0; y <= 480; y += 2)
+		for (x = 0; x <= 640; x += 2)
+			draw_pixel(y, x, 0x5a);
+	move(10, 10);
+	print_color("  Hello ! ! !  ", 0x0A);
+	getch();
+	init_graphics(0x02);
+	read_disk();
 }
