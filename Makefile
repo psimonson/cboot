@@ -1,4 +1,4 @@
-CFLAGS=-std=gnu89 -Wall -Wno-unused-function
+CFLAGS=-std=gnu89 -Wall -Werror -Wno-unused-function
 LDFLAGS=-static --oformat=binary --nmagic
 
 .PHONY: all clean disk deploy run
@@ -8,10 +8,10 @@ clean:
 	rm -f *~ *.o *.out boot.bin io.sys c.img
 
 boot.o: boot.c
-	$(CC) $(CFLAGS) -Os -march=i686 -nostdlib -nostartfiles -nodefaultlibs -nostdinc -ffreestanding -m16 -c -o $@ $^
+	$(CC) $(CFLAGS) -Os -march=i686 -ffreestanding -static -nostdlib -nostartfiles -nodefaultlibs -nostdinc -ffreestanding -m32 -c -o $@ $^
 
 io.o: io.c
-	$(CC) $(CFLAGS) -Os -march=i686 -nostdlib -nostartfiles -nodefaultlibs -nostdinc -ffreestanding -m16 -c -o $@ $^
+	$(CC) $(CFLAGS) -Os -march=i686 -ffreestanding -static -nostdlib -nostartfiles -nodefaultlibs -nostdinc -m32 -c -o $@ $^
 
 boot: boot.o
 	$(LD) $(LDFLAGS) -m elf_i386 -T boot.ld -o $@.bin $^

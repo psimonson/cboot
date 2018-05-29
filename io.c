@@ -11,7 +11,8 @@ int main()
 	for (;;) {
 		print("Press 'q' to reboot system...\r\n"
 			"Press 'e' to wipe CMOS!\r\n"
-			"Press 'g' for graphics.\r\n");
+			"Press 'g' for graphics.\r\n"
+			"Press 't' for more graphics.\r\n");
 		ch = getch();
 		switch (ch) {
 		case 'q':
@@ -48,11 +49,17 @@ void graphics(void)
 	unsigned short x, y;
 
 	init_graphics(0x12);
-	for (y = 0; y <= 240; y += 2)
-		for (x = 0; x <= 320; x += 2)
-			draw_pixel(y, x, 0x2f);
+	for (y = 130; y <= 200; y++)
+		for (x = 25; x <= 277; x++)
+			draw_pixel(y, x+3, 0xfb);
+	move(9, 9);
+	print_color(" By PRS (aka 5n4k3) ", 0xfb);
 	move(10, 10);
-	print_color(" Hello world ! ! ! ", 0x0D);
+	print_color(" Hello world ! ! ! ", 0xfb);
+	move(3, 11);
+	print_color(" What happens when you're good ? ", 0xfb);
+	move(10, 13);
+	print_color(" Press a key . . . ", 0x0f);
 	getch();
 	init_graphics(0x02);
 	read_disk();
