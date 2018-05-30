@@ -10,4 +10,3 @@ void main(void)
 	print("Press a key to reboot.\r\n");
 	reboot();
 }
-

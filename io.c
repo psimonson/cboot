@@ -3,7 +3,7 @@
 #include "disk.h"
 #include "io.h"
 
-int main()
+void main(void)
 {
 	extern void graphics(void);
 	extern void graphics2(void);
