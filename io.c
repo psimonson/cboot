@@ -1,13 +1,13 @@
 #include "code16gcc.h"
 #include "system.h"
 #include "disk.h"
-#include "io.h"
 
 void main(void)
 {
 	extern void graphics(void);
 	extern void graphics2(void);
 	unsigned char ch, i;
+
 	for (;;) {
 		print("Press 'q' to reboot system...\r\n"
 			"Press 'e' to wipe CMOS!\r\n"

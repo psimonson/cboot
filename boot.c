@@ -1,5 +1,4 @@
 #include "code16gcc.h"
-#include "io.h"
 #include "system.h"
 #include "disk.h"
 

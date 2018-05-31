@@ -1,21 +1,19 @@
-ENTRY (main)
-OUTPUT_FORMAT (binary)
+ENTRY(main);
 SECTIONS
 {
   . = 0x1000;
-
-  .cseg :
+  .text : AT(0x1000)
   {
+		_text = .;
     *(.text);
+		_text_end = .;
   }
-
-  .dseg :
-  {
-    *(.rodata);
-  }
-
   /DISCARD/ :
   {
-    *(.eh_frame);
+		*(.note*);
+		*(.iplt*);
+		*(.igot*);
+		*(.rel*);
+		*(.comment);
   }
 }

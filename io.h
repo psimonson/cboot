@@ -1,12 +1,8 @@
 #ifndef _IO_H_
 #define _IO_H_
 
-#ifndef _CODE16GCC_H_
-#include "code16gcc.h"
-#endif
-
 /* putch:  puts a character on the screen */
-static void putch(char c, char color)
+static void putch(int c, int color)
 {
 	__asm__ __volatile__(
 		"int $0x10"
@@ -17,7 +13,7 @@ static void putch(char c, char color)
 #define putchar(c) putch(c, 0x07)
 
 /* move:  moves cursor to x,y position */
-static void move(unsigned char x, unsigned char y)
+static void move(int x, int y)
 {
 	__asm__ __volatile__(
 		"int $0x10"
@@ -27,7 +23,7 @@ static void move(unsigned char x, unsigned char y)
 }
 
 /* print_color:  prints a string in color */
-static void print_color(const char *s, char color)
+static void print_color(const char *s, int color)
 {
 	while (*s) {
 		putch(*s++, color);
@@ -36,9 +32,9 @@ static void print_color(const char *s, char color)
 #define print(msg) print_color(msg, 0x07)
 
 /* getch:  get character from keyboard */
-static char getch(void)
+static int getch(void)
 {
-	char ch;
+	int ch;
 	__asm__ __volatile__(
 		"int $0x16"
 		: "=a"(ch)
@@ -48,17 +44,17 @@ static char getch(void)
 }
 
 /* getche:  get character from input; put character on screen */
-static char getche(void)
+static int getche(void)
 {
-	char ch;
+	int ch;
 	ch = getch();
 	putchar(ch);
 	return ch;
 }
 
 /* draw_pixel:  draws a pixel at specified location */
-static void draw_pixel(unsigned short y, unsigned short x,
-		unsigned char color)
+static void draw_pixel(int y, int x,
+		int color)
 {
 	__asm__ __volatile__(
 		"int $0x10"

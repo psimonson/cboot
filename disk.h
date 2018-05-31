@@ -5,7 +5,7 @@
 #include "io.h"
 #endif
 
-/* read_disk:  reads 2 sectors from floppy; starting at 2nd sector */
+/* read_disk:  reads 3 sectors from floppy; starting at 2nd sector */
 static void read_disk(void)
 {
 	unsigned char cf, reset;
@@ -14,7 +14,7 @@ static void read_disk(void)
 		"int $0x13; \
 		setc %0;"
 		: "=r"(cf)
-		: "a"(0x0202), "b"(0x1000), "c"(0x0002), "d"(0x0000)
+		: "a"(0x0203), "b"(0x1000), "c"(0x0002), "d"(0x0000)
 	);
 	if (cf) {
 		reset = 1;

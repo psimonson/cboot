@@ -1,28 +1,33 @@
-ENTRY (main)
-OUTPUT_FORMAT (binary)
+ENTRY(main);
 SECTIONS
 {
-  . = 0x7c00;
-
-  .cseg :
+  . = 0x7C00;
+  .text : AT(0x7C00)
   {
+		_text = .;
     *(.text);
+		_text_end = .;
   }
-
-  .dseg :
+	.data :
+	{
+		_data = .;
+		*(.bss);
+		*(.bss*);
+		*(.data);
+		*(.rodata*);
+		*(COMMON);
+		_data_end = .;
+	}
+  .sig : AT(0x7DFE)
   {
-    *(.rodata);
+    SHORT(0xaa55);
   }
-
-  .sig : AT(0x7dfe)
-  {
-    SHORT(0xAA55);
-  }
-
   /DISCARD/ :
   {
-    *(.eh_frame);
+		*(.note*);
+		*(.iplt*);
+		*(.igot*);
+		*(.rel*);
 		*(.comment);
-		*(.note.GNU-stack);
   }
 }

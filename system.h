@@ -1,10 +1,6 @@
 #ifndef _SYSTEM_H_
 #define _SYSTEM_H_
 
-#ifndef _CODE16GCC_H_
-#include "code16gcc.h"
-#endif
-
 static void reboot(void)
 {
 	__asm__ __volatile__(
@@ -14,7 +10,7 @@ static void reboot(void)
 
 static void clear_cmos(void)
 {
-	unsigned char i = 0;
+	int i = 0;
 	while (i++ <= 255) {
 		__asm__ __volatile__(
 			"xor %ax, %ax; \
@@ -24,7 +20,7 @@ static void clear_cmos(void)
 	}
 }
 
-static void init_graphics(char mode)
+static void init_graphics(int mode)
 {
 	__asm__ __volatile__(
 		"int $0x10"
