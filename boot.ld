@@ -4,24 +4,25 @@ SECTIONS
   . = 0x7C00;
   .text : AT(0x7C00)
   {
-		_text = .;
     *(.text);
-		_text_end = .;
   }
+	.rodata :
+	{
+		*(.rodata);
+	}
 	.data :
 	{
-		_data = .;
-		*(.bss);
-		*(.bss*);
 		*(.data);
-		*(.rodata*);
-		*(COMMON);
-		_data_end = .;
 	}
-  .sig : AT(0x7DFE)
-  {
-    SHORT(0xaa55);
-  }
+	.bss :
+	{
+		*(.bss);
+	}
+	. = 0x7dfe;
+	.sig :
+	{
+		SHORT(0xaa55);
+	}
   /DISCARD/ :
   {
 		*(.note*);
@@ -29,5 +30,7 @@ SECTIONS
 		*(.igot*);
 		*(.rel*);
 		*(.comment);
+		*(.note.GNU.stack);
+		*(.eh_frame);
   }
 }

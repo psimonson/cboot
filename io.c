@@ -9,9 +9,6 @@
 #include "system.h"
 #include "disk.h"
 
-void main(void);
-void (*start_fn)(void);
-
 /* program for my boot loader to run */
 void
 main(void)
@@ -21,6 +18,7 @@ main(void)
 	extern void typing(void);
 	extern void test_getline(void);
 	extern void test_getline2(void);
+	void (*start_fn)(void);
 	unsigned char ch;
 
 	start_fn = &main;

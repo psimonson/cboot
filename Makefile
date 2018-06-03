@@ -1,5 +1,5 @@
 CFLAGS=-std=gnu89 -Wall -Werror -Wno-unused-function -march=i386 -ffreestanding -nostdlib -nostartfiles -nodefaultlibs -nostdinc -m16 -c
-LDFLAGS=--nmagic -m elf_i386
+LDFLAGS=-static -nostdlib --nmagic -m elf_i386
 
 .PHONY: all clean disk boot.bin io.sys deploy run
 all: boot.bin io.sys

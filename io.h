@@ -1,8 +1,6 @@
 #ifndef _IO_H_
 #define _IO_H_
 
-#define EOF -1
-
 /* putch:  puts a character on the screen */
 static void
 putch (char c, unsigned char color)
@@ -98,6 +96,24 @@ trim(char *s)
 		s++;
 	}
 	*s = '\0';
+}
+
+/* strcpy:  copy t to s; returns length on success, if failed returns -1 */
+static int
+strcpy (char *s, char *t)
+{
+	char *p = s;
+	while ((*s++ = *t++) != '\0');
+	return s-p-1;
+}
+
+/* memcpy:  copy p2 to p1, n amount of bytes; returns void (nothing) */
+static void
+memcpy (void *p1, void *p2, int n)
+{
+	char *p = (char*)p2;
+	while (((char*)p2)-p < n)
+		*((char*)p1++) = *((char*)p2++);
 }
 
 /* strcmp:  compare t to s; returns 0 if match, anything else if false */
