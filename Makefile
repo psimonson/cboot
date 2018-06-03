@@ -2,7 +2,7 @@ CFLAGS=-std=gnu89 -Wall -Werror -Wno-unused-function -march=i386 -ffreestanding 
 LDFLAGS=--nmagic -m elf_i386
 
 .PHONY: all clean disk boot.bin io.sys deploy run
-all: deploy
+all: boot.bin io.sys
 
 clean:
 	rm -f *~ *.o *.out boot boot.bin io io.sys c.img
@@ -27,9 +27,6 @@ io.sys: io
 
 disk:
 	dd if=/dev/zero of=c.img bs=512 count=2880
-	sudo losetup /dev/loop0 c.img
-	sudo mkfs.vfat /dev/loop0
-	sudo losetup -d /dev/loop0
 
 deploy: boot io boot.bin io.sys disk
 	dd if=boot.bin of=c.img bs=1 count=512 conv=notrunc

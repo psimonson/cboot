@@ -5,16 +5,19 @@
 #include "io.h"
 #endif
 
-/* read_disk:  reads 3 sectors from floppy; starting at 2nd sector */
-static void read_disk(void)
+/* read_disk:  reads sectors from floppy drive (disk 0) */
+static void
+read_disk(unsigned char start_sector,
+		unsigned char sector_count, unsigned char drive)
 {
 	unsigned char cf, reset;
 	cf = 0;
-	__asm__ __volatile__(
+	__asm__ __volatile__ (
 		"int $0x13; \
 		setc %0;"
 		: "=r"(cf)
-		: "a"(0x0203), "b"(0x1000), "c"(0x0002), "d"(0x0000)
+		: "a"(0x0200 | sector_count), "b"(0x1000),
+		  "c"(0x0000 | start_sector), "d"(0x0000 | drive)
 	);
 	if (cf) {
 		reset = 1;
@@ -31,15 +34,15 @@ static void read_disk(void)
 			);
 	} else {
 		print("Sector read.\r\n");
-		__asm__("cli");
-		__asm__ __volatile__(
+		__asm__ ("cli");
+		__asm__ __volatile__ (
 			"mov %%ss, %%ax; \
 			mov $0x1000, %%sp; \
 			jmp $0x0000, $0x1000;"
 			:
 			: "a"(0x0000)
 		);
-		__asm__("sti");
+		__asm__ ("sti");
 	}
 }
 

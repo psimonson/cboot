@@ -1,18 +1,37 @@
+/*******************************************************
+ * io.c - Simple program for my boot loader.           *
+ *******************************************************
+ * Create by Philip R. Simonson (aka 5n4k3)     (2018) *
+ *******************************************************
+ */
+
 #include "code16gcc.h"
 #include "system.h"
 #include "disk.h"
 
-void main(void)
+void main(void);
+void (*start_fn)(void);
+
+/* program for my boot loader to run */
+void
+main(void)
 {
 	extern void graphics(void);
 	extern void graphics2(void);
-	unsigned char ch, i;
+	extern void typing(void);
+	extern void test_getline(void);
+	extern void test_getline2(void);
+	unsigned char ch;
 
+	start_fn = &main;
 	for (;;) {
 		print("Press 'q' to reboot system...\r\n"
 			"Press 'e' to wipe CMOS!\r\n"
 			"Press 'g' for graphics.\r\n"
-			"Press 't' for more graphics.\r\n");
+			"Press 't' for more graphics.\r\n"
+			"Press 'h' for timed typing.\r\n"
+			"Press 'o' for testing my getline.\r\n"
+			"Press 'p' for testing my getline again.\r\n");
 		ch = getch();
 		switch (ch) {
 		case 'q':
@@ -22,12 +41,7 @@ void main(void)
 		case 'e':
 		case 'E':
 			print("Wiping CMOS...\r\n");
-			for (i = 0; i < 255; i++)
-				__asm__ __volatile__(
-					"xor %ax, %ax;"
-					"in $0x70, %ax;"
-					"out %ax, $0x71;"
-				);
+			clear_cmos();
 			break;
 		case 'g':
 		case 'G':
@@ -37,14 +51,29 @@ void main(void)
 		case 'T':
 			graphics2();
 			break;
+		case 'h':
+		case 'H':
+			typing();
+			break;
+		case 'o':
+		case 'O':
+			test_getline();
+			break;
+		case 'p':
+		case 'P':
+			test_getline2();
+			break;
 		default:
 			print("Invalid key pressed\r\n");
 			break;
 		}
+		start_fn();
 	}
 }
 
-void graphics(void)
+/* graphics:  testing simple graphics */
+void
+graphics(void)
 {
 	unsigned short x, y;
 
@@ -62,10 +91,11 @@ void graphics(void)
 	print_color(" Press a key . . . ", 0x0f);
 	getch();
 	init_graphics(0x02);
-	read_disk();
 }
 
-void graphics2(void)
+/* graphics2:  testing simple graphics */
+void
+graphics2(void)
 {
 	unsigned short x, y;
 
@@ -77,5 +107,73 @@ void graphics2(void)
 	print_color("  Hello ! ! !  ", 0x0A);
 	getch();
 	init_graphics(0x02);
-	read_disk();
+}
+
+/* test_getline: function to test my getline function */
+void
+test_getline(void)
+{
+	char buf[64];
+	init_graphics(0x02);
+	print("Enter your name: ");
+	getline(buf, sizeof(buf));
+	trim(buf);
+	init_graphics(0x02);
+	if (!strcmp(buf, "Philip Simonson"))
+		print("Hello, master.\r\n");
+	else
+		print("I don't know you.\r\n");
+	print("Press any key to quit...");
+	getch();
+	init_graphics(0x02);
+}
+
+void
+test_getline2(void)
+{
+	char buf[64];
+	print("Enter your name: ");
+	getline(buf, sizeof buf);
+	trim(buf);
+	print("\r\n");
+	if (!strcmp(buf, ""))
+		print("Please enter your name.\r\n");
+	else {
+		print("Hello, ");
+		print(buf);
+		print(".");
+	}
+	print("\r\nPress any key to quit...\r\n");
+	getch();
+}
+
+#define TYPING_MESSAGE \
+"This is going to be typed on the screen...\r\n"\
+"\r\n"\
+"It's pretty cool that you can make a bootloader and program almost\r\n"\
+"all in C, using just a bit of assembler to start off the bootloader.\r\n"\
+"All the rest is in C, but all standard functions in libraries have\r\n"\
+"to be written in inline assembler. Then the actual main functions\r\n"\
+"and what not, all in C. That is the only way you can write any boot\r\n"\
+"code in C. Unfortunately, you have to have assembler mixed with C.\r\n"\
+"Just plain C alone will NOT work!\r\n"
+
+/* typing:  simple function to type text on the screen */
+void
+typing(void)
+{
+	int i;
+	init_graphics(0x02);
+	for (i = 0; i < strlen(TYPING_MESSAGE); i++) {
+		putchar(TYPING_MESSAGE[i]);
+		play_sound(0x13fb);
+		timer(0x0001, 0x8040);
+		stop_sound();
+	}
+	move(34, 15);
+	print("- Philip R. Simonson (aka 5n4k3)");
+	move(0, 24);
+	print("Press any key to continue . . .");
+	getch();
+	init_graphics(0x02);
 }
