@@ -1,5 +1,5 @@
-#ifndef _MYBOOL_H_INCLUDED_
-#define _MYBOOL_H_INCLUDED_
+#ifndef _MYBOOL_H_
+#define _MYBOOL_H_
 
 typedef enum Boolean { false, true } bool_t;
 

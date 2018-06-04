@@ -15,7 +15,11 @@ main(void)
 	init_fat(&table);
 	boot_startup();
 	print("Loading OS...\r\n");
-	read_disk(START_SECTOR, SECTOR_COUNT, FLOPPY_DRIVE);
+	if (read_disk(START_SECTOR, SECTOR_COUNT, FLOPPY_DRIVE))
+		setup_stack(0x1000);
+	else
+		print("Error: reading disk sector, no operating system found.\r\n"
+				"Press a key to reboot...\r\n");
 	getch();
 	reboot();
 }

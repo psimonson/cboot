@@ -14,10 +14,10 @@ io.o: io.c
 	$(CC) $(CFLAGS) -Os -o $@ $^
 
 boot: boot.o
-	$(LD) $(LDFLAGS) -T boot.ld -o $@ $^
+	$(LD) $(LDFLAGS) -T boot.ld -o $@ $^ || exit 1
 
 io: io.o
-	$(LD) $(LDFLAGS) -T io.ld -o $@ $^
+	$(LD) $(LDFLAGS) -T io.ld -o $@ $^ || exit 1
 
 boot.bin: boot
 	objcopy -O binary $< $@

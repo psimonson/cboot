@@ -4,46 +4,44 @@
 #ifndef _IO_H_
 #include "io.h"
 #endif
+#ifndef _MYBOOL_H_
+#include "mybool.h"
+#endif
 
 /* read_disk:  reads sectors from floppy drive (disk 0) */
-static void
-read_disk(unsigned char start_sector,
+static bool_t
+read_disk (unsigned char start_sector,
 		unsigned char sector_count, unsigned char drive)
 {
-	unsigned char cf, reset;
-	cf = 0;
-	__asm__ __volatile__ (
-		"int $0x13; \
-		setc %0;"
-		: "=r"(cf)
+	bool_t ret = true;
+	__asm__ goto (
+		"int $0x13; jc %l4" :
 		: "a"(0x0200 | sector_count), "b"(0x1000),
 		  "c"(0x0000 | start_sector), "d"(0x0000 | drive)
-	);
-	if (cf) {
-		reset = 1;
-		print("Could not read the disk"
-			" sector.\r\n");
-		while (reset)
-			__asm__ __volatile__(
-				"mov $0x00, %%ah;"
-				"int $0x13;"
-				"or %%ah, %%ah;"
-				"mov %%ah, %0;"
-				: "=r"(reset)
-				:
-			);
-	} else {
-		print("Sector read.\r\n");
+		:
+		: carry_set
+		);
+quit:
+	return ret;
+carry_set:
+	__asm__ ("clc");
+	ret = false;
+	goto quit;
+}
+
+/* setup_stack: setup stack and jump to location */
+static void
+setup_stack (unsigned short int __offset)
+{
 		__asm__ ("cli");
 		__asm__ __volatile__ (
 			"mov %%ss, %%ax; \
-			mov $0x1000, %%sp; \
-			jmp $0x0000, $0x1000;"
+			movw %1, %%sp; \
+			jmpw $0x0000, %1"
 			:
-			: "a"(0x0000)
+			: "a"(0x0000), "X"(__offset)
 		);
 		__asm__ ("sti");
-	}
 }
 
 #endif
