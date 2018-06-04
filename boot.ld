@@ -2,21 +2,15 @@ ENTRY(main);
 SECTIONS
 {
   . = 0x7C00;
-  .text : AT(0x7C00)
-  {
-    *(.text);
-  }
-	.rodata :
-	{
-		*(.rodata);
-	}
 	.data :
 	{
-		*(.data);
-	}
-	.bss :
-	{
 		*(.bss);
+		*(.data);
+		*(.rodata);
+	}
+	.text :
+	{
+		*(.text);
 	}
 	. = 0x7dfe;
 	.sig :
