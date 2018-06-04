@@ -5,27 +5,21 @@
 #include "io.h"
 #endif
 
-#define MAXTOKS 64		/* TODO: add code to seperate into tokens */
 #define MAXCMDS 2			/* max commands allowed */
+#define MAXCMDLEN  64
+#define MAXHELPLEN 128
 
-typedef struct command {
-	char cmd[64];
-	char help[128];
-	unsigned short count;
-} command_t;
+typedef struct command command_t;
 
-typedef struct cmd_tree {
-	command_t command;
-	struct cmd_tree *left;
-	struct cmd_tree *right;
-} cmd_tree_t;
-
-#ifndef _CMD_ARRAY_OVERRIDE
-static char *cmd_text[2][MAXCMDS] = {
-	{"help", "displays this info.\r\n"},
-	{"exit", "exits back to the main program.\r\n"}
+struct command {
+	char cmd[MAXCMDLEN];
+	char help[MAXHELPLEN];
 };
-#endif
+
+static command_t cmd_text[MAXCMDS] = {
+	{"help", "displays this info."},
+	{"exit", "exits back to the main program."}
+};
 
 /* --------------------- Functions Below ----------------------- */
 
@@ -33,34 +27,31 @@ static command_t
 add_command (const char *name, const char *help)
 {
 	command_t cmd;
-	strcpy ((char*)cmd.cmd, name);
-	strcpy ((char*)cmd.help, help);
-	++(cmd.count);
+	strcpy (cmd.cmd, name);
+	strcpy (cmd.help, help);
 	return cmd;
 }
 
-#ifndef _CMD_TREE_OVERRIDE
 static void
-list_commands (cmd_tree_t *leaf)
+list_commands (command_t cmds[])
 {
-	if (leaf) {
-		print (leaf->command.cmd);
-		list_commands (leaf->left);
-		list_commands (leaf->right);
+	int i;
+	for (i = 0; i < MAXCMDS; i++) {
+		print (cmds[i].cmd);
+		print (" - ");
+		print (cmds[i].help);
+		print ("\r\n");
 	}
 }
-static void
-init_commands (cmd_tree_t *leaf, const char *name, const char *help)
+
+static int
+compare_commands (command_t cmds[], const char *input)
 {
-	if (leaf) {
-		leaf->command = add_command (name, help);
-		init_commands (leaf->left, name, help);
-		init_commands (leaf->right, name, help);
-	}
+	int i;
+	for (i = 0; i < MAXCMDS; i++)
+		if (!strcmp(cmds[i].cmd, input))
+			return i;
+	return -1;
 }
-#else
-static void list_commands (cmd_tree_t *leaf);
-static void init_commands (cmd_tree_t *leaf);
-#endif
 
 #endif

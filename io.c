@@ -155,13 +155,8 @@ test_getline2(void)
 void
 shell (void)
 {
-	cmd_tree_t cmds;
-	unsigned char i;
-
 	init_graphics(0x02);
-	for (i = 0; i < 2; i++)
-		init_commands(&cmds, cmd_text[i][i], cmd_text[i][i]);
-	list_commands(&cmds);
+	list_commands(cmd_text);
 	print("\r\nPress any key to quit...\r\n");
 	getch();
 	init_graphics(0x02);
