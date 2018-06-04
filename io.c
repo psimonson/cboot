@@ -8,6 +8,7 @@
 #include "code16gcc.h"
 #include "system.h"
 #include "disk.h"
+#include "shell.h"
 
 /* program for my boot loader to run */
 void
@@ -18,6 +19,7 @@ main(void)
 	extern void typing(void);
 	extern void test_getline(void);
 	extern void test_getline2(void);
+	extern void shell(void);
 	void (*start_fn)(void);
 	unsigned char ch;
 
@@ -29,7 +31,8 @@ main(void)
 			"Press 't' for more graphics.\r\n"
 			"Press 'h' for timed typing.\r\n"
 			"Press 'o' for testing my getline.\r\n"
-			"Press 'p' for testing my getline again.\r\n");
+			"Press 'p' for testing my getline again.\r\n"
+			"Press 's' for simple shell.\r\n");
 		ch = getch();
 		switch (ch) {
 		case 'q':
@@ -60,6 +63,10 @@ main(void)
 		case 'p':
 		case 'P':
 			test_getline2();
+			break;
+		case 's':
+		case 'S':
+			shell();
 			break;
 		default:
 			print("Invalid key pressed\r\n");
@@ -143,6 +150,21 @@ test_getline2(void)
 	}
 	print("\r\nPress any key to quit...\r\n");
 	getch();
+}
+
+void
+shell (void)
+{
+	cmd_tree_t cmds;
+	unsigned char i;
+
+	init_graphics(0x02);
+	for (i = 0; i < 2; i++)
+		init_commands(&cmds, cmd_text[i][i], cmd_text[i][i]);
+	list_commands(&cmds);
+	print("\r\nPress any key to quit...\r\n");
+	getch();
+	init_graphics(0x02);
 }
 
 #define TYPING_MESSAGE \

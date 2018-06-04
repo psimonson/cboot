@@ -100,7 +100,7 @@ trim(char *s)
 
 /* strcpy:  copy t to s; returns length on success, if failed returns -1 */
 static int
-strcpy (char *s, char *t)
+strcpy (char *s, const char *t)
 {
 	char *p = s;
 	while ((*s++ = *t++) != '\0');
