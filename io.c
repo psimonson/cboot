@@ -155,8 +155,23 @@ test_getline2(void)
 void
 shell (void)
 {
+	unsigned char done, found;
+	char buf[64];
+
 	init_graphics(0x02);
-	list_commands(cmd_text);
+	done = found = 0;
+	while (!done) {
+		print("shell > ");
+		getline(buf, sizeof buf);
+		trim(buf);
+		print("\r\n");
+		found = compare_commands(cmd_text, buf);
+		if (found >= 0 && found < MAXCMDS) {
+			done = cmd_text[found].func();
+		} else {
+			print("Bad command entered.\r\n");
+		}
+	}
 	print("\r\nPress any key to quit...\r\n");
 	getch();
 	init_graphics(0x02);

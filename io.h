@@ -120,9 +120,9 @@ memcpy (void *p1, void *p2, int n)
 static int
 strcmp (const char *s, const char *t)
 {
-	while (*s == *t++)
-		if (*s++ == '\0')
-			return 0;
+	for (; *s == *t; s++, t++)
+		if (*s == '\0')
+			return *s-*t;
 	return *s-*t;
 }
 
