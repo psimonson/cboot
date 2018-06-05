@@ -4,6 +4,9 @@
 #ifndef _IO_H_
 #include "io.h"
 #endif
+#ifndef _STRING_H_
+#include "string.h"
+#endif
 
 #define MAXCMDS 2			/* max commands allowed */
 #define MAXCMDLEN  64

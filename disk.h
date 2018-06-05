@@ -1,9 +1,6 @@
 #ifndef _DISK_H_
 #define _DISK_H_
 
-#ifndef _IO_H_
-#include "io.h"
-#endif
 #ifndef _MYBOOL_H_
 #include "mybool.h"
 #endif

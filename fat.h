@@ -1,8 +1,8 @@
 #ifndef _FAT_H_
 #define _FAT_H_
 
-#ifndef _IO_H_
-#include "io.h"
+#ifndef _STRING_H_
+#include "string.h"
 #endif
 
 /* fat12 and fat16 extended boot data */
@@ -21,10 +21,8 @@ typedef struct fat {
 	unsigned char bpb[19];        /* BIOS parameter block */
 	unsigned char drive_num;      /* drive number (0x80) */
 	unsigned char boot_code[479]; /* pad to 512b */
-	unsigned char sig0;           /* sig0 55 */
-	unsigned char sig1;           /* sig1 aa */
-#define BOOTSIG0 0x55
-#define BOOTSIG1 0xaa
+	unsigned char sig0;
+	unsigned char sig1;
 }__attribute__((packed)) fat_t;
 
 /* init_fat:  initialize the fat disk */

@@ -3,15 +3,19 @@
 #include "disk.h"
 #include "fat.h"
 
+void main (void);
+__asm__ ("mov $main,%ax");
+__asm__ ("jmp *%eax");
+__asm__ ("nop");
+fat_t table;
 
 #define START_SECTOR 0x02
 #define SECTOR_COUNT 0x0A
 #define FLOPPY_DRIVE 0x00
 
 void
-main(void)
+main (void)
 {
-	fat_t table;
 	init_fat(&table);
 	boot_startup();
 	print("Loading OS...\r\n");

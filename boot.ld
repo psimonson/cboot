@@ -1,12 +1,12 @@
 ENTRY(main);
 SECTIONS
 {
-  . = 0x7C00;
+	. = 0x7C00;
 	.text : AT(0x7C00)
 	{
 		*(.text);
 	}
-	.data :
+	.data : AT(0x0000)
 	{
 		*(.bss);
 		*(.data);
