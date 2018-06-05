@@ -8,7 +8,7 @@
 #include "string.h"
 #endif
 
-#define MAXCMDS 2			/* max commands allowed */
+#define MAXCMDS 3			/* max commands allowed */
 #define MAXCMDLEN  64
 #define MAXHELPLEN 128
 
@@ -21,10 +21,12 @@ struct command {
 };
 
 /* command function prototypes */
-static unsigned char cmd_help (void);
-static unsigned char cmd_exit (void);
+static unsigned char cmd_sound (void);
+static unsigned char cmd_help  (void);
+static unsigned char cmd_exit  (void);
 
 static command_t cmd_text[MAXCMDS] = {
+	{"sound", "plays a frequency for about half second.", &cmd_sound},
 	{"help", "displays this info.", &cmd_help},
 	{"exit", "exits back to the main program.", &cmd_exit}
 };
@@ -64,6 +66,30 @@ compare_commands (command_t cmds[], const char *input)
 
 /* ----------------------- Command Functions ---------------------- */
 
+/* cmd_sound:  play a frequency for about a half second */
+static unsigned char
+cmd_sound (void)
+{
+	char buf[64];
+	int freq = 0;
+
+	print("Enter frequency of sound (eg 100-45000): ");
+	getline(buf, sizeof buf);
+	print("\r\n");
+	freq = atoi(buf);
+	if (freq < 100 || freq > 45000)
+		print("Frequency was out of range.\r\n");
+	else {
+		print("Playing sound please wait...\r\n");
+		timer(0x0002, 0x404b);
+		play_sound(freq);
+		timer(0x0002, 0x228b);
+		stop_sound();
+	}
+	return 0;
+}
+
+/* cmd_help:  gives users list of available commands */
 static unsigned char
 cmd_help (void)
 {
@@ -71,6 +97,7 @@ cmd_help (void)
 	return 0;
 }
 
+/* cmd_exit:  quits the shell */
 static unsigned char
 cmd_exit (void)
 {

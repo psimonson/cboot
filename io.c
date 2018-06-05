@@ -11,7 +11,7 @@
 #include "shell.h"
 #include "string.h"
 
-__asm__("jmpw $0x0000, $main");
+__asm__("jmpw $0x0000,$main");
 
 /* program for my boot loader to run */
 void
