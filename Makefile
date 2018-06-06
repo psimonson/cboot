@@ -3,36 +3,28 @@ CFLAGS=-std=c89 -Wall -Werror -Wno-unused-function -march=i386 -ffreestanding -n
 LDFLAGS=-static -nostdlib --nmagic -m elf_i386
 
 .PHONY: all clean disk boot.bin io.sys deploy run
-all: boot.bin io.sys
+all: boot io
 
 clean:
-	rm -f *~ *.o *.out boot boot.bin io io.sys c.img
+	rm -f *~ *.o *.elf boot.bin io.sys c.img
 
-boot.o: boot.c
-	$(CC) $(CFLAGS) -Os -o $@ $^
-
-io.o: io.c
+%.o: %.c
 	$(CC) $(CFLAGS) -Os -o $@ $^
 
 boot: boot.o
-	$(LD) $(LDFLAGS) -T boot.ld -o $@ $^ || exit 1
+	$(LD) $(LDFLAGS) -T boot.ld -o $@.elf $^
+	objcopy -O binary $@.elf $@.bin
 
 io: io.o
-	$(LD) $(LDFLAGS) -T io.ld -o $@ $^ || exit 1
-
-boot.bin: boot
-	objcopy -O binary $< $@
-
-io.sys: io
-	objcopy -O binary $< $@
+	$(LD) $(LDFLAGS) -T io.ld -o $@.elf $^
+	objcopy -O binary $@.elf $@.sys
 
 disk:
 	dd if=/dev/zero of=c.img bs=512 count=2880
 
-deploy: boot io boot.bin io.sys disk
+deploy: disk boot io
 	dd if=boot.bin of=c.img bs=1 count=512 conv=notrunc
 	dd if=io.sys of=c.img bs=1 seek=512 conv=notrunc
 
 run: deploy
 	qemu-system-i386 -fda c.img -boot a
-
