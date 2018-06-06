@@ -11,19 +11,20 @@
 #include "shell.h"
 #include "string.h"
 
-__asm__("jmpw $0x0000,$main");
+__asm__("jmp main");
 
 /* program for my boot loader to run */
-void
+int
 main(void)
 {
+	extern void test_atoi(void);
 	extern void graphics(void);
 	extern void graphics2(void);
 	extern void typing(void);
 	extern void test_getline(void);
 	extern void test_getline2(void);
 	extern void shell(void);
-	void (*start_fn)(void);
+	int (*start_fn)(void);
 	unsigned char ch;
 
 	start_fn = &main;
@@ -35,9 +36,14 @@ main(void)
 			"Press 'h' for timed typing.\r\n"
 			"Press 'o' for testing my getline.\r\n"
 			"Press 'p' for testing my getline again.\r\n"
-			"Press 's' for simple shell.\r\n");
+			"Press 's' for simple shell.\r\n"
+			"Press 'a' for testing my atoi function.\r\n");
 		ch = getch();
 		switch (ch) {
+		case 'a':
+		case 'A':
+			test_atoi();
+			break;
 		case 'q':
 		case 'Q':
 			reboot();
@@ -77,6 +83,23 @@ main(void)
 		}
 		start_fn();
 	}
+}
+
+/* test_atoi:  testing my atoi function */
+void
+test_atoi(void)
+{
+	char buf[64];
+	int res;
+
+	print("Enter number: ");
+	getline(buf, sizeof buf);
+	print("\r\n");
+	res = atoi(buf);
+	if (res >= 0)
+		print("You've entered a positive number.\r\n");
+	else
+		print("You've entered a negative number.\r\n");
 }
 
 /* graphics:  testing simple graphics */

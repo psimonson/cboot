@@ -71,19 +71,18 @@ static unsigned char
 cmd_sound (void)
 {
 	char buf[64];
-	int freq = 0;
+	unsigned short freq = 0;
 
-	print("Enter frequency of sound (eg 100-45000): ");
+	print("Enter frequency of sound (eg 100-50000): ");
 	getline(buf, sizeof buf);
 	print("\r\n");
-	freq = atoi(buf);
-	if (freq < 100 || freq > 45000)
+	freq = (unsigned short)atoi(buf);
+	if (freq < 100 || freq > 50000)
 		print("Frequency was out of range.\r\n");
 	else {
 		print("Playing sound please wait...\r\n");
-		timer(0x0002, 0x404b);
 		play_sound(freq);
-		timer(0x0002, 0x228b);
+		timer(0x0002, 0x828b);
 		stop_sound();
 	}
 	return 0;

@@ -70,43 +70,35 @@ static double
 atof (const char *s)
 {
 	double val, power;
-	int i, sign;
+	char sign;
 
-	for (i = 0; isspace(s[i]); i++);    /* skip whitespace */
-	sign = (s[i] == '-') ? -1 : 1;
-	if (s[i] == '+' || s[i] == '-')
-		i++;
-	for (val = 0.0; isdigit(s[i]); i++)
-		val = 10.0 * val + (s[i] - '0');
-	if (s[i] == '.')
-		i++;
-	for (power = 1.0; isdigit(s[i]); i++) {
-		val = 10.0 * val + (s[i] - '0');
+	while (isspace(*s)) s++;    /* skip whitespace */
+	sign = (*s == '-') ? -1 : 1;
+	if (*s == '+' || *s == '-')
+		s++;
+	for (val = 0.0; isdigit(*s); s++)
+		val = 10.0 * val + (*s - '0');
+	if (*s == '.')
+		s++;
+	for (power = 1.0; isdigit(*s); s++) {
+		val = 10.0 * val + (*s - '0');
 		power *= 10.0;
 	}
-	return sign * val / power;
+	return (double)(sign * val / power);
 }
 
 /* atoi:  convert string s to integer */
 static int
 atoi (const char *s)
 {
-	int ret;
-	ret = (int)atof(s);
-	return ret;
-}
-
-/* printd:  print n in decimal */
-static void
-printd (int n)
-{
-	if (n < 0) {
-		putchar('-');
-		n = -n;
-	}
-	if (n / 10)
-		printd(n / 10);
-	putchar(n % 10 - '0');
+	int val, sign;
+	while (isspace(*s)) s++;
+	sign = (*s == '-') ? -1 : 1;
+	if (*s == '+' || *s == '-')
+		s++;
+	for (val = 0; isdigit(*s); s++)
+		val = val * 10 + (*s - '0');
+	return val*sign;
 }
 
 /* draw_pixel:  draws a pixel at specified location */

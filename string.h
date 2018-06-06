@@ -24,14 +24,15 @@ getline (char *s, int lim)
 		switch (c) {
 			case '\b':
 				*--s = '\0';
-				print(" \b");
+				lim++;
 				break;
 			case '\r':
 				putchar('\n');
 				break;
 			default:
 				*s++ = c;
-			break;
+				lim--;
+				break;
 		}
 	if (c == '\r') {
 		*s++ = c;
