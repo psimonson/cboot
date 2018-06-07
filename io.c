@@ -6,12 +6,12 @@
  */
 
 #include "code16gcc.h"
+__asm__("jmp main");
+
 #include "system.h"
 #include "disk.h"
 #include "shell.h"
 #include "string.h"
-
-__asm__("jmp main");
 
 /* program for my boot loader to run */
 int
@@ -24,10 +24,8 @@ main(void)
 	extern void test_getline(void);
 	extern void test_getline2(void);
 	extern void shell(void);
-	int (*start_fn)(void);
 	unsigned char ch;
 
-	start_fn = &main;
 	for (;;) {
 		print("Press 'q' to reboot system...\r\n"
 			"Press 'e' to wipe CMOS!\r\n"
@@ -81,7 +79,6 @@ main(void)
 			print("Invalid key pressed\r\n");
 			break;
 		}
-		start_fn();
 	}
 }
 
