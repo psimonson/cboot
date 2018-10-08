@@ -9,9 +9,6 @@
 #include "system.h"
 #include "disk.h"
 
-void main(void);
-void (*start_fn)(void);
-
 /* program for my boot loader to run */
 void
 main(void)
@@ -23,7 +20,6 @@ main(void)
 	extern void test_getline2(void);
 	unsigned char ch;
 
-	start_fn = &main;
 	for (;;) {
 		print("Press 'q' to reboot system...\r\n"
 			"Press 'e' to wipe CMOS!\r\n"
@@ -67,7 +63,6 @@ main(void)
 			print("Invalid key pressed\r\n");
 			break;
 		}
-		start_fn();
 	}
 }
 

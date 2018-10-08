@@ -66,7 +66,7 @@ static int
 getline (char *s, int lim)
 {
 	char *p = s;
-	char c;
+	char c = -1;
 	while (lim-- > 2 && (c = getche()) != '\r')
 		switch (c) {
 			case '\b':
