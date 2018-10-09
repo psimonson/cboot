@@ -37,17 +37,21 @@ read_disk(unsigned char start_sector,
 			);
 	} else {
 		print("Sector read.\r\n");
-		__asm__ ("cli");
-		__asm__ __volatile__ (
-			"mov %%ss, %%ax; \
-			mov $0x1000, %%sp; \
-			jmp $0x0000, $0x1000;"
-			:
-			: "a"(0x0000)
-		);
-		__asm__ ("sti");
 	}
 	return cf;
 }
 
+static void
+jump_sector(unsigned short sector)
+{
+	__asm__ ("cli");
+	__asm__ __volatile__ (
+		"mov %%ss, %%ax;"
+		"mov %1, %%sp;"
+		"jmpw $0x0000, %1;"
+		:
+		: "a"(0x0000), "g"(sector)
+	);
+	__asm__ ("sti");
+}
 #endif

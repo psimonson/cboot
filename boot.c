@@ -16,7 +16,8 @@ main(void)
 		reboot();
 	} else {
 		play_sound(0x1a5b);
-		timer(0x01be, 0x01fe);
+		timer(0x001e, 0x8040);
 		stop_sound();
+		jump_sector(0x1000);
 	}
 }
