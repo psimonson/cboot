@@ -11,7 +11,12 @@ main(void)
 {
 	boot_startup();
 	print("Loading sector from floppy.\r\n");
-	read_disk(START_SECTOR, SECTOR_COUNT, FLOPPY_DRIVE);
-	print("Press a key to reboot.\r\n");
-	reboot();
+	if (read_disk(START_SECTOR, SECTOR_COUNT, FLOPPY_DRIVE) == CFLAG_SET) {
+		print("Error: Press a key to reboot.\r\n");
+		reboot();
+	} else {
+		play_sound(0x1a5b);
+		timer(0x01be, 0x01fe);
+		stop_sound();
+	}
 }

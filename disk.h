@@ -5,8 +5,11 @@
 #include "io.h"
 #endif
 
+#define CFLAG_SET 0x01
+#define CFLAG_NOT 0x00
+
 /* read_disk:  reads sectors from floppy drive (disk 0) */
-static void
+static char
 read_disk(unsigned char start_sector,
 		unsigned char sector_count, unsigned char drive)
 {
@@ -44,6 +47,7 @@ read_disk(unsigned char start_sector,
 		);
 		__asm__ ("sti");
 	}
+	return cf;
 }
 
 #endif
