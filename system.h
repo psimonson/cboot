@@ -126,7 +126,7 @@ write_cmos (unsigned char __index)
 	while (__index) {
 		outb (__index, 0x70);
 		byte = inb (0x71);
-		outb (byte | 0x00, 0x71);
+		outb (byte & 0x00, 0x71);
 		--__index;
 	}
 	__asm__ ("sti");
