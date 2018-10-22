@@ -117,27 +117,13 @@ read_cmos (unsigned char __index)
 	return _byte;
 }
 
-/* write_cmos:  write __byte to __index of CMOS memory */
-static void
-write_cmos (unsigned char __index)
-{
-	unsigned char byte;
-	unsigned char i = 0;
-	__asm__ ("cli");
-	while (i < __index) {
-		outb (i, 0x70);
-		byte &= ~(byte & 0xff);
-		outb (byte, 0x71);
-		i++;
-	}
-	__asm__ ("sti");
-}
-
 /* clear_cmos:  wipe cmos; resetting back to factory */
 static void
 clear_cmos (void)
 {
-	write_cmos(0xff);
+	outb(0x2e, 0x70);	/* write to port 0x70 */
+	timer(0x002a, 0x4080);
+	outb(0xff, 0x71);
 }
 
 /* init_graphics:  clear screen and set graphics mode */
