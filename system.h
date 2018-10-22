@@ -122,12 +122,13 @@ static void
 write_cmos (unsigned char __index)
 {
 	unsigned char byte;
+	unsigned char i = 0;
 	__asm__ ("cli");
-	while (__index) {
-		outb (__index, 0x70);
-		byte = inb (0x71);
-		outb (byte & 0x00, 0x71);
-		--__index;
+	while (i < __index) {
+		outb (i, 0x70);
+		byte &= ~(byte & 0xff);
+		outb (byte, 0x71);
+		i++;
 	}
 	__asm__ ("sti");
 }
