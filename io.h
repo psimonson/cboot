@@ -65,12 +65,30 @@ getche_color (unsigned char color)
 }
 #define getche() getche_color(0x07)
 
+/* init_gbuf:  initialize and clear buffer */
+static void
+init_gbuf (void)
+{
+	int i;
+
+	for (i=0; i<BUFSIZ; i++)
+		g_buf[i] = '\0';
+	g_bufp = 0;
+}
+
+/* print_gbuf:  prints contents of buffer */
+static void
+print_gbuf (void)
+{
+	print(g_buf);
+}
+
 /* getchar:  get character into buffer */
 static char
 getchar (void)
 {
 	char ch = getche();
-	if (g_bufp > BUFSIZ) {
+	if (g_bufp >= BUFSIZ) {
 		print("Too many characters...\r\n");
 		return -1;
 	} else

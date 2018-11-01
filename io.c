@@ -152,7 +152,7 @@ void
 test_getch (void)
 {
 	int i;
-
+	init_gbuf();
 	init_graphics(0x03);
 	print("Password: ");
 	i = 8;
