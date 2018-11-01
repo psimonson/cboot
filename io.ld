@@ -8,6 +8,12 @@ SECTIONS
     *(.text);
 		_text_end = .;
   }
+  .data :
+  {
+	  _data = .;
+	  *(.data);
+	  _data_end = .;
+  }
   /DISCARD/ :
   {
 		*(.note*);
@@ -15,5 +21,6 @@ SECTIONS
 		*(.igot*);
 		*(.rel*);
 		*(.comment);
+		*(.eh_frame);
   }
 }

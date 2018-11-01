@@ -11,10 +11,7 @@ SECTIONS
 	.data :
 	{
 		_data = .;
-		*(.bss);
-		*(.bss*);
 		*(.data);
-		*(.rodata*);
 		*(COMMON);
 		_data_end = .;
 	}
@@ -24,10 +21,11 @@ SECTIONS
   }
   /DISCARD/ :
   {
-		*(.note*);
-		*(.iplt*);
-		*(.igot*);
-		*(.rel*);
-		*(.comment);
+	*(.note*);
+	*(.iplt*);
+	*(.igot*);
+	*(.rel*);
+	*(.comment);
+	*(.eh_frame);
   }
 }
