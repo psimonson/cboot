@@ -11,13 +11,14 @@
 
 /* program for my boot loader to run */
 void
-main(void)
+main (void)
 {
 	extern void graphics(void);
 	extern void graphics2(void);
 	extern void typing(void);
 	extern void test_getline(void);
 	extern void test_getline2(void);
+	extern void test_getch(void);
 	unsigned char ch;
 
 	for (;;) {
@@ -27,7 +28,8 @@ main(void)
 			"Press 't' for more graphics.\r\n"
 			"Press 'h' for timed typing.\r\n"
 			"Press 'o' for testing my getline.\r\n"
-			"Press 'p' for testing my getline again.\r\n");
+			"Press 'p' for testing my getline again.\r\n"
+			"Press 'm' for testing my getchar.\r\n");
 		ch = getch();
 		switch (ch) {
 		case 'q':
@@ -59,6 +61,10 @@ main(void)
 		case 'P':
 			test_getline2();
 			break;
+		case 'm':
+		case 'M':
+			test_getch();
+			break;
 		default:
 			print("Invalid key pressed\r\n");
 			break;
@@ -68,7 +74,7 @@ main(void)
 
 /* graphics:  testing simple graphics */
 void
-graphics(void)
+graphics (void)
 {
 	unsigned short x, y;
 
@@ -90,7 +96,7 @@ graphics(void)
 
 /* graphics2:  testing simple graphics */
 void
-graphics2(void)
+graphics2 (void)
 {
 	unsigned short x, y;
 
@@ -106,7 +112,7 @@ graphics2(void)
 
 /* test_getline: function to test my getline function */
 void
-test_getline(void)
+test_getline (void)
 {
 	char buf[64];
 	init_graphics(0x02);
@@ -124,7 +130,7 @@ test_getline(void)
 }
 
 void
-test_getline2(void)
+test_getline2 (void)
 {
 	char buf[64];
 	print("Enter your name: ");
@@ -142,6 +148,29 @@ test_getline2(void)
 	getch();
 }
 
+void
+test_getch (void)
+{
+	int i;
+
+	init_graphics(0x03);
+	print("Password: ");
+	i = 8;
+	while (i > 0) {
+		char ch = getchar();
+		if (ch == '\r' || ch == '\n') {
+			ungetch(ch);
+			break;
+		}
+	}
+	if (bufcmp("pass") == 0)
+		print("\r\nAccess granted!\r\n");
+	else
+		print("\r\nAccess denied!\r\n");
+	getch();
+	init_graphics(0x03);
+}
+
 #define TYPING_MESSAGE \
 "This is going to be typed on the screen...\r\n"\
 "\r\n"\
@@ -155,7 +184,7 @@ test_getline2(void)
 
 /* typing:  simple function to type text on the screen */
 void
-typing(void)
+typing (void)
 {
 	int i;
 	init_graphics(0x02);

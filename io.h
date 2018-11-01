@@ -2,6 +2,10 @@
 #define _IO_H_
 
 #define EOF -1
+#define BUFSIZ 128
+
+static char g_buf[BUFSIZ];
+static int g_bufp;
 
 /* putch:  puts a character on the screen */
 static void
@@ -61,6 +65,29 @@ getche_color (unsigned char color)
 }
 #define getche() getche_color(0x07)
 
+/* getchar:  get character into buffer */
+static char
+getchar (void)
+{
+	char ch = getche();
+	if (g_bufp > BUFSIZ) {
+		print("Too many characters...\r\n");
+		return -1;
+	} else
+		g_buf[g_bufp++] = ch;
+	return ch;
+}
+
+/* ungetch:  push char back to standard input */
+static void
+ungetch (char ch)
+{
+	if (g_bufp > 0) {
+		g_buf[--g_bufp] = ch;
+	} else
+		print("No characters on buffer.\r\n");
+}
+
 /* getline:  get string of characters; size of lim-1 */
 static int
 getline (char *s, int lim)
@@ -104,6 +131,17 @@ trim(char *s)
 static int
 strcmp (const char *s, const char *t)
 {
+	while (*s == *t++)
+		if (*s++ == '\0')
+			return 0;
+	return *s-*t;
+}
+
+/* bufcmp:  compare getchar buffer to a string */
+static int
+bufcmp (const char *s)
+{
+	char *t = g_buf;
 	while (*s == *t++)
 		if (*s++ == '\0')
 			return 0;
