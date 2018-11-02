@@ -3,7 +3,7 @@
 #include "disk.h"
 
 #define START_SECTOR 0x02
-#define SECTOR_COUNT 0x07
+#define SECTOR_COUNT 0x08
 #define FLOPPY_DRIVE 0x00
 
 void
