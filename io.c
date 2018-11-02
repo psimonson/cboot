@@ -148,25 +148,61 @@ test_getline2 (void)
 	getch();
 }
 
+char
+is_alpha (char ch)
+{
+	return ((ch >= 'a' && ch <= 'z') ||
+		(ch >= 'A' && ch <= 'Z'));
+}
+
+char
+is_num (char ch)
+{
+	return (ch >= '0' && ch <= '9');
+}
+
+#define NAME 0
+
+char
+get_token (char *token)
+{
+	char ch;
+	while ((ch = getchar()) == ' ' || ch == '\t' || ch == '\b');
+	if (ch == '\r' || ch == '\n') {
+		ungetch(ch);
+		return -1;
+	}
+	if (is_alpha(ch)) {
+		for (*token++ = ch; is_alpha(ch = getchar()); )
+			*token++ = ch;
+		*token = '\0';
+		ungetch(ch); /* if not push, back onto the buffer */
+		return NAME;
+	} else
+		return ch;
+}
+
 void
 test_getch (void)
 {
+	char buf[12], tname;
 	int i;
 	init_gbuf();
 	init_graphics(0x03);
-	print("Password: ");
-	i = 8;
-	while (i > 0) {
-		char ch = getchar();
-		if (ch == '\r' || ch == '\n') {
-			ungetch(ch);
+	i = 3;
+	do {
+		--i;
+		print("Password: ");
+		if ((tname = get_token(buf)) == 0) {
+			if (strcmp(buf, "pass") == 0)
+				print("\r\nAccess granted!\r\n");
+			else
+				print("\r\nAccess denied!\r\n");
+		} else if (tname == EOF)
 			break;
-		}
-	}
-	if (bufcmp("pass") == 0)
-		print("\r\nAccess granted!\r\n");
-	else
-		print("\r\nAccess denied!\r\n");
+	} while (i > 0);
+	if (!i)
+		print("\r\nRan out of tries..\r\n");
 	getch();
 	init_graphics(0x03);
 }
